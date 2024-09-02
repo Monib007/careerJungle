@@ -159,7 +159,7 @@ export const updateProfile = async (req, res) => {
       };
       
       return res.status(200).json({
-        message: `Profile updated successfuly!`,
+        message: `Profile updated successfully!`,
         user,
         success: true,
       })
