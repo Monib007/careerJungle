@@ -1,8 +1,8 @@
 const User = require("../models/user-model");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-export const register = async (req, res) => {
+const register = async (req, res) => {
   try {
     const { fullName, email, phoneNumber, password, role } = req.body;
     if (!fullName || !email || !phoneNumber || !password || !role) {
@@ -37,7 +37,7 @@ export const register = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email, password, role } = req.body;
 
@@ -102,7 +102,7 @@ export const login = async (req, res) => {
   }
 };
 
-export const logout = async (req, res) => {
+const logout = async (req, res) => {
   try {
     return res.status(200).cookie("token", "", { magAge: 0 }).json({
       message: `Logged out successfully!`,
@@ -113,21 +113,22 @@ export const logout = async (req, res) => {
   }
 };
 
-export const updateProfile = async (req, res) => {
+const updateProfile = async (req, res) => {
   try {
     const { fullName, email, phoneNumber, bio, skills } = req.body;
     const file = req.file;
-    if (!fullName || !email || !phoneNumber || !bio || !skills) {
-      return res.status(400).json({
-        message: "Something is missing!",
-        success: false,
-      });
-    }
+    // if (!fullName || !email || !phoneNumber || !bio || !skills) {
+    //   return res.status(400).json({
+    //     message: "Something is missing!",
+    //     success: false,
+    //   });
+    // }
 
     // cloudinary ayega idhar
-
-
-    const skillsArray = skills.split(",");
+    let skillsArray;
+    if(skills){
+      skillsArray = skills.split(",");
+    }
     const userId  = req.id;  //middleware Authentication
     let user = await User.findById(userId);
 
@@ -139,11 +140,13 @@ export const updateProfile = async (req, res) => {
     }
 
     //updating data
-    user.fullName = fullName;
-    user.email= email;
-    user.phoneNumber= phoneNumber;
-    user.profile.bio= bio;
-    user.profile.skills= skillsArray;
+
+    if(fullName) user.fullName = fullName; 
+    if(email)  user.email= email; 
+    if(phoneNumber) user.phoneNumber= phoneNumber; 
+    if(bio) user.profile.bio= bio; 
+    if(skillsArray) user.profile.skills= skillsArray; 
+    
 
     // resume comes later here......
 
@@ -168,3 +171,5 @@ export const updateProfile = async (req, res) => {
     console.log(err);
   }
 };
+
+module.exports = {register, login, logout, updateProfile};
