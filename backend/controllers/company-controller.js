@@ -43,6 +43,10 @@ const getCompany = async (req, res) => {
         success: false,
       });
     }
+    return res.status(200).json({
+      companies,
+      success: true,
+    })
   } catch (err) {
     console.log(err);
   }
